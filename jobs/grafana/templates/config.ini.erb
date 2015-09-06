@@ -1,0 +1,105 @@
+#################################### Paths ####################################
+[paths]
+# Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
+#
+data = /var/vcap/store/grafana
+
+#
+# Directory where grafana can store logs
+#
+logs = /var/vcap/sys/log/grafana
+
+#################################### Server ####################################
+[server]
+# Protocol (http or https)
+protocol = <%= p("grafana.ssl.cert", nil) ? "https" : "http" %>
+
+# The http port  to use
+http_port = <%= p("grafana.listen_port") %>
+
+<% if_p("grafana.root_url") do |root_url| %>
+# The full public facing url
+root_url = <%= root_url %>
+<% end %>
+
+# https certs & key file
+<% if_p("grafana.ssl.cert") do %>
+cert_file = /var/vcap/jobs/grafana/config/ssl.crt
+cert_key = /var/vcap/jobs/grafana/config/ssl.key
+<% end %>
+
+#################################### Database ####################################
+[database]
+type = sqlite3
+path = grafana.db
+
+#################################### Analytics ####################################
+[analytics]
+# Server reporting, sends usage counters to stats.grafana.org every 24 hours.
+# No ip addresses are being tracked, only simple counters to track
+# running instances, dashboard and error counts. It is very helpful to us.
+# Change this option to false to disable reporting.
+reporting_enabled = false
+
+#################################### Security ####################################
+[security]
+# default admin user, created on startup
+admin_user = <%= p("grafana.admin_username") %>
+
+# default admin password, can be changed before first start of grafana,  or in profile settings
+admin_password = <%= p("grafana.admin_password") %>
+
+#################################### Users ####################################
+[users]
+# disable user signup / registration
+allow_sign_up = <%= p("grafana.users.allow_sign_up") %>
+
+# Allow non admin users to create organizations
+allow_org_create = <%= p("grafana.users.allow_organization_creation") %>
+
+# Set to true to automatically assign new users to the default organization (id 1)
+auto_assign_org = <%= p("grafana.users.auto_assign_organization") %>
+
+# Default role new users will be automatically assigned (if disabled above is set to true)
+auto_assign_org_role = <%= p("grafana.users.auto_assign_organization_role") %>
+
+#################################### Anonymous Auth ##########################
+[auth.anonymous]
+# enable anonymous access
+enabled = <%= p("grafana.auth.anonymous.enabled") %>
+
+# specify organization name that should be used for unauthenticated users
+org_name = <%= p("grafana.auth.anonymous.organization") %>
+
+# specify role for unauthenticated users
+org_role = <%= p("grafana.auth.anonymous.organization_role") %>
+
+<% if_p("grafana.auth.github.enabled", "grafana.auth.github.client_id", "grafana.auth.github.client_secret") do %>
+#################################### Github Auth ##########################
+[auth.github]
+enabled = true
+allow_sign_up = <%= p("grafana.auth.github.allow_sign_up") %>
+client_id = <%= p("grafana.auth.github.client_id") %>
+client_secret = <%= p("grafana.auth.github.client_secret") %>
+scopes = user:email,read:org
+auth_url = <%= p("grafana.auth.github.auth_url") %>
+token_url = <%= p("grafana.auth.github.token_url") %>
+api_url = <%= p("grafana.auth.github.api_url") %>
+team_ids = <%= p("grafana.auth.github.team_ids").join(",") %>
+allowed_domains = <%= p("grafana.auth.github.allowed_email_domains").join(" ") %>
+allowed_organizations = <%= p("grafana.auth.github.allowed_organizations").join(" ") %>
+<% end %>
+
+<% if_p("grafana.auth.google.enabled", "grafana.auth.google.client_id", "grafana.auth.google.client_secret") do %>
+#################################### Google Auth ##########################
+[auth.google]
+enabled = true
+allow_sign_up = <%= p("grafana.auth.google.allow_sign_up") %>
+client_id = <%= p("grafana.auth.google.client_id") %>
+client_secret = <%= p("grafana.auth.google.client_secret") %>
+scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+auth_url = <%= p("grafana.auth.google.auth_url") %>
+token_url = <%= p("grafana.auth.google.token_url") %>
+api_url = <%= p("grafana.auth.google.api_url") %>
+allowed_domains = <%= p("grafana.auth.google.allowed_email_domains").join(" ") %>
+<% end %>
