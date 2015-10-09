@@ -1,0 +1,25 @@
+#!/bin/bash
+
+LOG_DIR=/var/vcap/sys/log/grafana
+MARKERFILE=/var/vcap/sys/run/grafana/datasource_created
+URL="http://<%= p("grafana.admin_username") %>:<%= p("grafana.admin_password") %>@localhost:<%= p("grafana.listen_port") %>/api/datasources"
+DATASOURCE_NAME="<%= p("grafana.datasource.name") %>"
+
+DATA='
+{"name":"'"${DATASOURCE_NAME}"'",
+ "type":"<%= p("grafana.datasource.database_type") %>",
+ "access":"proxy",
+ "url":"<%= p("grafana.datasource.url") %>",
+ "password":"<%= p("grafana.datasource.password") %>",
+ "user":"<%= p("grafana.datasource.user") %>",
+ "database":"<%= p("grafana.datasource.database_name") %>",
+ "basicAuth":false
+}'
+
+if curl -ivf "$URL" | grep '"name":"'"${DATASOURCE_NAME}"'"' ; then
+  echo "Datasource ${DATASOURCE_NAME} exists, checked at $(date)" > ${MARKERFILE}
+else
+  if curl -ivf -X POST "$URL" -H 'Content-Type: application/json' -d "${DATA}" &> ${LOG_DIR}/datasource_create.log ; then
+    echo "Created datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
+  fi
+fi

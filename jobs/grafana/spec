@@ -3,6 +3,7 @@ name: grafana
 
 templates:
   grafana_ctl: bin/grafana_ctl
+  create_datasource.erb: bin/create_datasource
   config.ini.erb: config/config.ini
   ssl.key.erb: config/ssl.key
   ssl.crt.erb: config/ssl.crt
@@ -125,3 +126,26 @@ properties:
   grafana.auth.google.allowed_email_domains:
     description: "E-mail address domains to allow. If empty, all are allowed."
     default: []
+
+  grafana.datasource.name:
+    description: "The name of the datasource that points to the metrics database"
+    default: influxdb
+
+  grafana.datasource.database_type:
+    description: "The type of the metrics database"
+    default: influbxdb_08
+
+  grafana.datasource.url:
+    description: "The url of the metrics database"
+
+  grafana.datasource.user:
+    description: "The user name for the metrics database"
+    default: metrics-user
+
+  grafana.datasource.password:
+    description: "The password for the metrics database"
+    default: metrics-password
+
+  grafana.datasource.database_name:
+    description: "The name of the metrics database"
+    default: metrics
