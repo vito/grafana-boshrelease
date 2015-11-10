@@ -2,7 +2,10 @@
 
 LOG_DIR=/var/vcap/sys/log/grafana
 MARKERFILE=/var/vcap/sys/run/grafana/datasource_created
+
 <% if_p("grafana.datasource.url") do |datasource_url| %>
+exec &>> ${LOG_DIR}/datasource_create.log
+
 URL="http://<%= p("grafana.admin_username") %>:<%= p("grafana.admin_password") %>@localhost:<%= p("grafana.listen_port") %>/api/datasources"
 DATASOURCE_NAME="<%= p("grafana.datasource.name") %>"
 
@@ -17,10 +20,18 @@ DATA='
  "basicAuth":false
 }'
 
-if curl -ivf "$URL" | grep '"name":"'"${DATASOURCE_NAME}"'"' ; then
-  echo "Datasource ${DATASOURCE_NAME} exists, checked at $(date)" > ${MARKERFILE}
+# If we had jq, this is what the query would look like:
+#DATASOURCE_ID=$(curl -s "${URL}" | jq '.[] | select(.name == "'"${DATASOURCE_NAME}"'") | .id ')
+# Instead we have to call sed to the rescue:
+DATASOURCE_ID=$(curl -s "${URL}" | sed -n 's/[^"]*"id":\([0-9]*\),.*"name":"'"${DATASOURCE_NAME}"'".*$/\1/p' )
+echo "Datasource '${DATASOURCE_NAME}' has id '${DATASOURCE_ID}'"
+
+if [ -n "${DATASOURCE_ID}" ]; then
+  if curl -ivf -X PUT "${URL}/${DATASOURCE_ID}" -H 'Content-Type: application/json' -d "${DATA}" ; then
+    echo "Updated datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
+  fi
 else
-  if curl -ivf -X POST "$URL" -H 'Content-Type: application/json' -d "${DATA}" &> ${LOG_DIR}/datasource_create.log ; then
+  if curl -ivf -X POST "${URL}" -H 'Content-Type: application/json' -d "${DATA}" ; then
     echo "Created datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
   fi
 fi
