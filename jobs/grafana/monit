@@ -3,3 +3,5 @@ check process grafana
   start program "/var/vcap/jobs/grafana/bin/grafana_ctl start"
   stop program "/var/vcap/jobs/grafana/bin/grafana_ctl stop"
   group vcap
+check file datasource_marker with path /var/vcap/sys/run/grafana/datasource_created
+  if does not exist then exec /var/vcap/jobs/grafana/bin/create_datasource

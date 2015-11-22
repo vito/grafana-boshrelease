@@ -1,0 +1,41 @@
+#!/bin/bash
+
+LOG_DIR=/var/vcap/sys/log/grafana
+MARKERFILE=/var/vcap/sys/run/grafana/datasource_created
+
+<% if_p("grafana.datasource.url") do |datasource_url| %>
+exec &>> ${LOG_DIR}/datasource_create.log
+
+URL='<%= p("grafana.ssl.cert", nil) ? "https" : "http" %>://127.0.0.1:<%= p("grafana.listen_port") %>/api/datasources'
+CREDENTIALS='<%= p("grafana.admin_username") %>:<%= p("grafana.admin_password") %>'
+DATASOURCE_NAME='<%= p("grafana.datasource.name") %>'
+
+DATA='
+{"name":"'"${DATASOURCE_NAME}"'",
+ "type":"<%= p("grafana.datasource.database_type") %>",
+ "access":"proxy",
+ "url":"<%= datasource_url %>",
+ "password":"<%= p("grafana.datasource.password") %>",
+ "user":"<%= p("grafana.datasource.user") %>",
+ "database":"<%= p("grafana.datasource.database_name") %>",
+ "basicAuth":false
+}'
+
+# If we had jq, this is what the query would look like:
+#DATASOURCE_ID=$(curl -u "${CREDENTIALS}" -ks "${URL}" | jq '.[] | select(.name == "'"${DATASOURCE_NAME}"'") | .id ')
+# Instead we have to call sed to the rescue:
+DATASOURCE_ID=$(curl -u "${CREDENTIALS}" -ks "${URL}" | sed -n 's/[^"]*"id":\([0-9]*\),.*"name":"'"${DATASOURCE_NAME}"'".*$/\1/p' )
+echo "Datasource '${DATASOURCE_NAME}' has id '${DATASOURCE_ID}'"
+
+if [ -n "${DATASOURCE_ID}" ]; then
+  if curl -u "${CREDENTIALS}" -kivf -X PUT "${URL}/${DATASOURCE_ID}" -H 'Content-Type: application/json' -d "${DATA}" ; then
+    echo "Updated datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
+  fi
+else
+  if curl -u "${CREDENTIALS}" -kivf -X POST "${URL}" -H 'Content-Type: application/json' -d "${DATA}" ; then
+    echo "Created datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
+  fi
+fi
+<% end.else do %>
+echo "No automatic datasource creation requested" > ${MARKERFILE}
+<% end %>
