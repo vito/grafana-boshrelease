@@ -4,5 +4,5 @@ name: grafana
 dependencies: []
 
 files:
-- grafana-2.1/*.tar.gz
+- grafana-2.6.0/*.tar.gz
 - pid_utils.sh
