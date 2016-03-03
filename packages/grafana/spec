@@ -4,5 +4,5 @@ name: grafana
 dependencies: []
 
 files:
-- grafana-2.1/*.tar.gz
+- grafana-2.6/*.tar.gz # From https://grafanarel.s3.amazonaws.com/builds/grafana-2.6.0.linux-x64.tar.gz
 - pid_utils.sh
