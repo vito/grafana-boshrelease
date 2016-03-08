@@ -1,8 +1,4 @@
 ---
-grafana-2.1/grafana-2.1.3.linux-x64.tar.gz:
-  object_id: 5279a122-d2a9-41df-baa0-ab1b1cfa2ebd
-  sha: 84da57996819c577ada471ba6679b46800c26633
-  size: 21386805
 grafana-2.6.0/grafana-2.6.0.linux-x64.tar.gz:
   object_id: 692c5bcd-3365-45c2-b1a7-f2d4e9d74a86
   sha: b5d18e5ff96d2176497b33a158cf9a2eb0602b00
