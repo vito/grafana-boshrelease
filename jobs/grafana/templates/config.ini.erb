@@ -183,12 +183,14 @@ api_url = <%= p("grafana.auth.google.api_url") %>
 allowed_domains = <%= p("grafana.auth.google.allowed_email_domains").join(" ") %>
 <% end %>
 
+<% if_p("grafana.auth.proxy.enabled") do %>
 #################################### Auth Proxy ##########################
 [auth.proxy]
-;enabled = false
-;header_name = X-WEBAUTH-USER
-;header_property = username
-;auto_sign_up = true
+enabled = true
+header_name = <%= p("grafana.auth.proxy.header_name") %>
+header_property = <%= p("grafana.auth.proxy.header_property") %>
+auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
+<% end %>
 
 #################################### Basic Auth ##########################
 [auth.basic]

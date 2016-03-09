@@ -144,3 +144,15 @@ properties:
 
   grafana.datasource.database_name:
     description: "The name of the metrics database"
+
+  grafana.auth.proxy.enabled:
+    description: "Handle authentication in a http reverse proxy"
+
+  grafana.auth.proxy.header_name:
+    description: "The name of the http header used to forward authenticated user"
+
+  grafana.auth.proxy.header_property:
+    description: "Whether the header contains a user name or an email address (allowed values are 'username' or 'email')."
+
+  grafana.auth.proxy.auto_sign_up:
+    description: "Enable sign up of users who do not exist in Grafana DB"
