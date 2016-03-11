@@ -5,3 +5,4 @@ check process grafana
   group vcap
 check file datasource_marker with path /var/vcap/sys/run/grafana/datasource_created
   if does not exist then exec /var/vcap/jobs/grafana/bin/create_datasource
+exec /var/vcap/jobs/grafana/bin/create_dashboards

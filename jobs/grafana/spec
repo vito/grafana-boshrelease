@@ -3,6 +3,7 @@ name: grafana
 
 templates:
   grafana_ctl: bin/grafana_ctl
+  create_dashboards.erb: bin/create_dashboards
   create_datasource.erb: bin/create_datasource
   config.ini.erb: config/config.ini
   ssl.key.erb: config/ssl.key
@@ -127,20 +128,10 @@ properties:
     description: "E-mail address domains to allow. If empty, all are allowed."
     default: []
 
-  grafana.datasource.url:
-    description: "The url of the metrics database. No datasource will be created if this is set to nil."
+  grafana.datasources:
+    description: "A list of datasources that contain metrics."
+    default: []
 
-  grafana.datasource.name:
-    description: "The name of the datasource that points to the metrics database"
-
-  grafana.datasource.database_type:
-    description: "The type of the metrics database"
-
-  grafana.datasource.user:
-    description: "The user name for the metrics database"
-
-  grafana.datasource.password:
-    description: "The password for the metrics database"
-
-  grafana.datasource.database_name:
-    description: "The name of the metrics database"
+  grafana.dashboards:
+    description: "A list of dashboards to display metrics."
+    default: []
