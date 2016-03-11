@@ -36,8 +36,6 @@ else
     echo "Created datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
   fi
 fi
-<% end.else do %>
-echo "No automatic datasource creation requested" > ${MARKERFILE}
 <% end %>
 
 <% p("grafana.dashboards", []).each do |dashboard| %>
