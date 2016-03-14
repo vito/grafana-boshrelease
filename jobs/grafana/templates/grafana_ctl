@@ -24,6 +24,7 @@ case $1 in
     mkdir -p $PACKAGE_DIR/data/log
     chown vcap:vcap $PACKAGE_DIR/data/log
 
+    exec chpst -u vcap:vcap $PACKAGE_DIR/bin/create-dashboards
     exec chpst -u vcap:vcap $PACKAGE_DIR/bin/grafana-server \
       -config=/var/vcap/jobs/grafana/config/config.ini \
       -homepath=$PACKAGE_DIR \
