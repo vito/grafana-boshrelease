@@ -1,0 +1,6 @@
+<% p("grafana.dashboards", []).each do |dashboard| %>
+  curl -o dashboard.json "<%= dashboard['repo_url'] %>/<%= dashboard['branch'] %>/<%= dashboard['path'] %>"
+  CREDENTIALS='<%= p("grafana.admin_username") %>:<%= p("grafana.admin_password") %>'
+  URL='<%= p("grafana.ssl.cert", nil) ? "https" : "http" %>://127.0.0.1:<%= p("grafana.listen_port") %>/api/dashboards/db'
+  curl -u "${CREDENTIALS}" "${URL}" -X POST -H 'Content-Type: application/json;charset=UTF-8' -d dashboard.json
+<% end %>

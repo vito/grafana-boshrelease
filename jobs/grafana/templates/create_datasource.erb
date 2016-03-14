@@ -3,21 +3,21 @@
 LOG_DIR=/var/vcap/sys/log/grafana
 MARKERFILE=/var/vcap/sys/run/grafana/datasource_created
 
-<% if_p("grafana.datasource.url") do |datasource_url| %>
-exec &>> ${LOG_DIR}/datasource_create.log
+<% p("grafana.datasources", []).each do |datasource| %>
 
+exec &>> ${LOG_DIR}/datasource_create.log
 URL='<%= p("grafana.ssl.cert", nil) ? "https" : "http" %>://127.0.0.1:<%= p("grafana.listen_port") %>/api/datasources'
 CREDENTIALS='<%= p("grafana.admin_username") %>:<%= p("grafana.admin_password") %>'
-DATASOURCE_NAME='<%= p("grafana.datasource.name") %>'
+DATASOURCE_NAME='<%= datasource['name'] %>'
 
 DATA='
 {"name":"'"${DATASOURCE_NAME}"'",
- "type":"<%= p("grafana.datasource.database_type") %>",
+ "type":"<%= datasource['database_type'] %>",
  "access":"proxy",
- "url":"<%= datasource_url %>",
- "password":"<%= p("grafana.datasource.password") %>",
- "user":"<%= p("grafana.datasource.user") %>",
- "database":"<%= p("grafana.datasource.database_name") %>",
+ "url":"<%= datasource['url'] %>",
+ "password":"<%= datasource['password'] %>",
+ "user":"<%= datasource['user'] %>",
+ "database":"<%= datasource['database_name'] %>",
  "basicAuth":false
 }'
 
@@ -36,6 +36,4 @@ else
     echo "Created datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
   fi
 fi
-<% end.else do %>
-echo "No automatic datasource creation requested" > ${MARKERFILE}
 <% end %>
