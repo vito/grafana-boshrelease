@@ -3,21 +3,43 @@
 LOG_DIR=/var/vcap/sys/log/grafana
 MARKERFILE=/var/vcap/sys/run/grafana/datasource_created
 
-<% if_p("grafana.datasource.url") do |datasource_url| %>
+<%
+  datasources = Array.new
+
+  if_p("grafana.datasources") do |dss|
+    datasources = dss
+  end
+
+  if_p("grafana.datasource.url") do |ds|
+    datasources << {
+      "url" => p("grafana.datasource.url"),
+      "name" => p("grafana.datasource.name"),
+      "database_type" => p("grafana.datasource.database_type"),
+      "user" => p("grafana.datasource.user"),
+      "password" => p("grafana.datasource.password"),
+      "database_name" => p("grafana.datasource.database_name")
+    }
+  end
+%>
+
 exec &>> ${LOG_DIR}/datasource_create.log
 
 URL='<%= p("grafana.ssl.cert", nil) ? "https" : "http" %>://127.0.0.1:<%= p("grafana.listen_port") %>/api/datasources'
 CREDENTIALS='<%= p("grafana.admin_username") %>:<%= p("grafana.admin_password") %>'
-DATASOURCE_NAME='<%= p("grafana.datasource.name") %>'
+
+<% datasources.each do |datasource| %>
+echo "Creating datasource '<%= datasource['name'] %>' ..."
+
+DATASOURCE_NAME='<%= datasource['name'] %>'
 
 DATA='
 {"name":"'"${DATASOURCE_NAME}"'",
- "type":"<%= p("grafana.datasource.database_type") %>",
+ "type":"<%= datasource['database_type'] %>",
  "access":"proxy",
- "url":"<%= datasource_url %>",
- "password":"<%= p("grafana.datasource.password") %>",
- "user":"<%= p("grafana.datasource.user") %>",
- "database":"<%= p("grafana.datasource.database_name") %>",
+ "url":"<%= datasource['url'] %>",
+ "password":"<%= datasource['password'] %>",
+ "user":"<%= datasource['user'] %>",
+ "database":"<%= datasource['database_name'] %>",
  "basicAuth":false
 }'
 
@@ -29,13 +51,15 @@ echo "Datasource '${DATASOURCE_NAME}' has id '${DATASOURCE_ID}'"
 
 if [ -n "${DATASOURCE_ID}" ]; then
   if curl -u "${CREDENTIALS}" -kivf -X PUT "${URL}/${DATASOURCE_ID}" -H 'Content-Type: application/json' -d "${DATA}" ; then
-    echo "Updated datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
+    echo "Updated datasource ${DATASOURCE_NAME} at $(date)" >> ${MARKERFILE}
   fi
 else
   if curl -u "${CREDENTIALS}" -kivf -X POST "${URL}" -H 'Content-Type: application/json' -d "${DATA}" ; then
-    echo "Created datasource ${DATASOURCE_NAME} at $(date)" > ${MARKERFILE}
+    echo "Created datasource ${DATASOURCE_NAME} at $(date)" >> ${MARKERFILE}
   fi
 fi
-<% end.else do %>
+<% end #each iterator %>
+
+<% if datasources.empty? then %>
 echo "No automatic datasource creation requested" > ${MARKERFILE}
 <% end %>
