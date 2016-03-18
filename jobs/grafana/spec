@@ -145,6 +145,18 @@ properties:
   grafana.datasource.database_name:
     description: "The name of the metrics database"
 
+  grafana.datasources:
+    description: |
+      * If you want to configure multiple datasources, you can define an array of hashes here. Each hash must have 'name', 'url', 'database_type', 'user', 'password' and 'database_name' defined.
+      * These datasources will be created in addition to the datasource defined in 'grafana.datasource'. The latter property is for backwards compatibility.
+    example: |
+      - name: influxdb
+        url: http://1.2.3.4:8086
+        database_type: influxdb
+        user: admin
+        password: admin123
+        database_name: metrics
+
   grafana.auth.proxy.enabled:
     description: "Handle authentication in a http reverse proxy"
 
