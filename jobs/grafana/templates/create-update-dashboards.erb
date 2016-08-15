@@ -1,0 +1,30 @@
+#!/bin/bash
+
+DASHBOARDS_DIR="/var/vcap/store/grafana/dashboards"
+LOG_DIR=/var/vcap/sys/log/grafana
+
+exec &>> ${LOG_DIR}/create-update-dashboards.log
+
+echo Create ${DASHBOARDS_DIR} directory
+mkdir -p ${DASHBOARDS_DIR}
+
+echo Delete old dashboards from ${DASHBOARDS_DIR}
+rm -f ${DASHBOARDS_DIR}/*
+
+<%
+  dashboards = p("grafana.dashboards")
+%>
+
+<% dashboards.each do |dashboard| %>
+dashboard_file="${DASHBOARDS_DIR}/<%= dashboard['name'] %>.json"
+
+echo Create ${dashboard_file}
+
+cat > "${dashboard_file}" <<'EOF'
+<%= dashboard['content'] %>
+EOF
+<% end %>
+
+<% if dashboards.empty? then %>
+echo "No automatic dashboard creation requested"
+<% end %>

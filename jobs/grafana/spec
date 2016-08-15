@@ -5,6 +5,7 @@ templates:
   grafana_ctl: bin/grafana_ctl
   post-start: bin/post-start
   create-update-datasources.erb: bin/create-update-datasources
+  create-update-dashboards.erb: bin/create-update-dashboards
   config.ini.erb: config/config.ini
   ssl.key.erb: config/ssl.key
   ssl.crt.erb: config/ssl.crt
@@ -157,6 +158,14 @@ properties:
         user: admin
         password: admin123
         database_name: metrics
+
+  grafana.dashboards:
+    description: |
+      List of grafana dasboards, converted to YAML
+    example: |
+      - name: frontend (without extension)
+        content: <minified JSON content>
+    default: []
 
   grafana.auth.proxy.enabled:
     description: "Handle authentication in a http reverse proxy"
