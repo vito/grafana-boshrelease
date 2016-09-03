@@ -129,35 +129,22 @@ properties:
     description: "E-mail address domains to allow. If empty, all are allowed."
     default: []
 
-  grafana.datasource.url:
-    description: "The url of the metrics database. No datasource will be created if this is set to nil."
-
-  grafana.datasource.name:
-    description: "The name of the datasource that points to the metrics database"
-
-  grafana.datasource.database_type:
-    description: "The type of the metrics database"
-
-  grafana.datasource.user:
-    description: "The user name for the metrics database"
-
-  grafana.datasource.password:
-    description: "The password for the metrics database"
-
-  grafana.datasource.database_name:
-    description: "The name of the metrics database"
+  grafana.datasource:
+    description: "Grafana datasource; see http://docs.grafana.org/http_api/data_source/ for details"
 
   grafana.datasources:
     description: |
-      * If you want to configure multiple datasources, you can define an array of hashes here. Each hash must have 'name', 'url', 'database_type', 'user', 'password' and 'database_name' defined.
+      * If you want to configure multiple datasources, you can define an array of hashes here. Each hash must have 'name', 'url', 'type', 'user', 'password' and 'database' defined.
       * These datasources will be created in addition to the datasource defined in 'grafana.datasource'. The latter property is for backwards compatibility.
+      * See http://docs.grafana.org/http_api/data_source/ for details
     example: |
       - name: influxdb
         url: http://1.2.3.4:8086
-        database_type: influxdb
+        type: influxdb
         user: admin
         password: admin123
-        database_name: metrics
+        database: metrics
+    default: []
 
   grafana.dashboards:
     description: |
