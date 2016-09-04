@@ -1,11 +1,12 @@
----
 builds:
+  a66b9999-1cdc-4de6-7886-dc5901014bf5:
+    version: "5"
   ba0ffbb4-bf70-4a3b-7e2f-e696b26b4603:
-    version: '3'
-  c4b049af-fc65-4dff-b197-78f113103bd1:
-    version: '2'
-  db0fa1f9-0638-4481-81f1-bcb5530d7749:
-    version: '1'
+    version: "3"
   bae9ad89-03d5-462b-a477-8101dce71e7b:
-    version: '4'
-format-version: '2'
+    version: "4"
+  c4b049af-fc65-4dff-b197-78f113103bd1:
+    version: "2"
+  db0fa1f9-0638-4481-81f1-bcb5530d7749:
+    version: "1"
+format-version: "2"
