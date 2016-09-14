@@ -165,3 +165,7 @@ properties:
 
   grafana.auth.proxy.auto_sign_up:
     description: "Enable sign up of users who do not exist in Grafana DB"
+
+  grafana.log_to_syslog:
+    description: Set this to True to enable logging to syslog.
+    default: False
