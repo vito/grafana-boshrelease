@@ -24,13 +24,21 @@ case $1 in
     mkdir -p $PACKAGE_DIR/data/log
     chown vcap:vcap $PACKAGE_DIR/data/log
 
+<% if p('grafana.log_to_syslog') %>
+    exec chpst -u vcap:vcap $PACKAGE_DIR/bin/grafana-server \
+      -config=/var/vcap/jobs/grafana/config/config.ini \
+      -homepath=$PACKAGE_DIR \
+      -pidfile=$PIDFILE \
+      1> >( tee -a $LOG_DIR/stdout.log | logger -t vcap.grafana.stdout ) \
+      2> >( tee -a $LOG_DIR/stderr.log | logger -t vcap.grafana.stderr )
+<% else %>
     exec chpst -u vcap:vcap $PACKAGE_DIR/bin/grafana-server \
       -config=/var/vcap/jobs/grafana/config/config.ini \
       -homepath=$PACKAGE_DIR \
       -pidfile=$PIDFILE \
       1>>$LOG_DIR/stdout.log \
       2>>$LOG_DIR/stderr.log
-
+<% end %>
     ;;
 
   stop)
