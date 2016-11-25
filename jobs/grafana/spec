@@ -33,6 +33,15 @@ properties:
   grafana.admin_password:
     description: "Password for the initial admin user."
 
+  grafana.session.cookie_name:
+    description: "Session cookie name"
+
+  grafana.session.cookie_secure:
+    description: "Use session in https only"
+
+  grafana.session.session_life_time:
+    description: "Session lifetime in seconds"
+
   grafana.users.allow_sign_up:
     description: "If enabled, users can create their own accounts."
     default: false
