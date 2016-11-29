@@ -90,13 +90,13 @@ path = grafana.db
 ;provider_config = sessions
 
 # Session cookie name
-;cookie_name = grafana_sess
+<% if_p("grafana.session.cookie_name") do |name| %>cookie_name = <%= name %><% end %>
 
 # If you use session in https only, default is false
-;cookie_secure = false
+<% if_p("grafana.session.cookie_secure") do |secure| %>cookie_secure = <%= secure %><% end %>
 
 # Session life time, default is 86400
-;session_life_time = 86400
+<% if_p("grafana.session.session_life_time") do |lifetime| %>session_life_time = <%= lifetime %><% end %>
 
 #################################### Analytics ####################################
 [analytics]
