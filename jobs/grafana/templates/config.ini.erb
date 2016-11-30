@@ -166,6 +166,21 @@ org_name = <%= p("grafana.auth.anonymous.organization") %>
 # specify role for unauthenticated users
 org_role = <%= p("grafana.auth.anonymous.organization_role") %>
 
+<% if_p("grafana.auth.generic_oauth.enabled", "grafana.auth.generic_oauth.client_id", "grafana.auth.generic_oauth.client_secret") do %>
+[auth.generic_oauth]
+enabled = true
+allow_sign_up = <%= p("grafana.auth.generic_oauth.allow_sign_up") %>
+client_id = <%= p("grafana.auth.generic_oauth.client_id") %>
+client_secret = <%= p("grafana.auth.generic_oauth.client_secret") %>
+scopes = <%= p("grafana.auth.generic_oauth.scopes").join(",") %>
+auth_url = <%= p("grafana.auth.generic_oauth.auth_url") %>
+token_url = <%= p("grafana.auth.generic_oauth.token_url") %>
+api_url = <%= p("grafana.auth.generic_oauth.api_url") %>
+team_ids = <%= p("grafana.auth.generic_oauth.team_ids").join(",") %>
+allowed_domains = <%= p("grafana.auth.generic_oauth.allowed_domains").join(" ") %>
+allowed_organizations = <%= p("grafana.auth.generic_oauth.allowed_organizations").join(" ") %>
+<% end %>
+
 <% if_p("grafana.auth.github.enabled", "grafana.auth.github.client_id", "grafana.auth.github.client_secret") do %>
 #################################### Github Auth ##########################
 [auth.github]
