@@ -174,3 +174,7 @@ properties:
 
   grafana.auth.proxy.auto_sign_up:
     description: "Enable sign up of users who do not exist in Grafana DB"
+
+  grafana.snapshots.external_enabled:
+    description: "Enable external snapshots sharing (to snapshot.raintank.io)"
+    default: true
