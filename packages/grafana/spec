@@ -4,5 +4,5 @@ name: grafana
 dependencies: []
 
 files:
-- grafana/*.tar.gz # From https://grafanarel.s3.amazonaws.com/builds/grafana-4.1.2-1486989747.linux-x64.tar.gz
+- grafana/*.tar.gz # From https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.2.0.linux-x64.tar.gz
 - pid_utils.sh
