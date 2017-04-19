@@ -382,14 +382,23 @@ path = /var/vcap/store/grafana/dashboards
 [external_image_storage]
 # Used for uploading images to public servers so they can be included in slack/email messages.
 # you can choose between (s3, webdav)
-;provider =
+<% if_p("grafana.external_image_storage.s3.bucket_url") do %>
+provider = s3
+<% end %>
+<% if_p("grafana.external_image_storage.webdav.url") do %>
+provider = webdav
+<% end %>
 
 [external_image_storage.s3]
-;bucket_url =
-;access_key =
-;secret_key =
+<% if_p("grafana.external_image_storage.s3.bucket_url", "grafana.external_image_storage.s3.access_key", "grafana.external_image_storage.s3.secret_key") do |bucket, key, secret| %>
+bucket_url = <%= bucket %>
+access_key = <%= key %>
+secret_key = <%= secret %>
+<% end %>
 
 [external_image_storage.webdav]
-;url =
-;username =
-;password =
+<% if_p("grafana.external_image_storage.webdav.url", "grafana.external_image_storage.webdav.username", "grafana.external_image_storage.webdav.password") do |url, user, pass| %>
+url = <%= url %>
+username = <%= user %>
+password = <%= pass %>
+<% end %>
