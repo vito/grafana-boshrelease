@@ -9,6 +9,9 @@ templates:
   config.ini.erb: config/config.ini
   ssl.key.erb: config/ssl.key
   ssl.crt.erb: config/ssl.crt
+  client.key.erb: config/client.key
+  client.crt.erb: config/client.crt
+  cacert.pem.erb: config/cacert.pem
 
 packages:
 - grafana
@@ -137,6 +140,49 @@ properties:
   grafana.auth.google.allowed_email_domains:
     description: "E-mail address domains to allow. If empty, all are allowed."
     default: []
+
+  grafana.auth.generic_oauth.enabled:
+    description: "Permit users to authenticate via Generic OAuth."
+    default: false
+
+  grafana.auth.generic_oauth.name:
+    description: "Generic OAuth login link display name."
+    default: "OAuth"
+
+  grafana.auth.generic_oauth.client_id:
+    description: "Generic OAuth client ID."
+
+  grafana.auth.generic_oauth.client_secret:
+    description: "Generic OAuth client secret."
+
+  grafana.auth.generic_oauth.scopes:
+    description: "Generic OAuth scopes."
+
+  grafana.auth.generic_oauth.auth_url:
+    description: "Generic OAuth authorization endpoint."
+
+  grafana.auth.generic_oauth.token_url:
+    description: "Generic OAuth access token endpoint."
+
+  grafana.auth.generic_oauth.api_url:
+    description: "Generic OAuth OpenID UserInfo API endpoint."
+
+  grafana.auth.generic_oauth.allowed_domains:
+    description: "E-mail address domains to allow. If empty, all are allowed."
+    default: []
+
+  grafana.auth.generic_oauth.allow_sign_up:
+    description: "Permit users to register via Generic OAuth."
+    default: true
+
+  grafana.auth.generic_oauth.tls_client_cert:
+    description: "PEM encoded certificate for TLS client authentication via Generic OAuth."
+
+  grafana.auth.generic_oauth.tls_client_key:
+    description: "PEM encoded private key for TLS client authentication via Generic OAuth."
+
+  grafana.auth.generic_oauth.tls_client_ca:
+    description: "PEM encoded CA certificate for TLS client authentication via Generic OAuth."
 
   grafana.datasource:
     description: "Grafana datasource; see http://docs.grafana.org/http_api/data_source/ for details"

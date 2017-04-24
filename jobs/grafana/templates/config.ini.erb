@@ -227,19 +227,25 @@ api_url = <%= p("grafana.auth.google.api_url") %>
 allowed_domains = <%= p("grafana.auth.google.allowed_email_domains").join(" ") %>
 <% end %>
 
+<% if_p("grafana.auth.generic_oauth.enabled", "grafana.auth.generic_oauth.client_id", "grafana.auth.generic_oauth.client_secret", "grafana.auth.generic_oauth.auth_url", "grafana.auth.generic_oauth.token_url", "grafana.auth.generic_oauth.api_url") do %>
 #################################### Generic OAuth ##########################
 [auth.generic_oauth]
-;enabled = false
-;name = OAuth
-;allow_sign_up = true
-;client_id = some_id
-;client_secret = some_secret
-;scopes = user:email,read:org
-;auth_url = https://foo.bar/login/oauth/authorize
-;token_url = https://foo.bar/login/oauth/access_token
-;api_url = https://foo.bar/user
-;team_ids =
-;allowed_organizations =
+enabled = true
+name = <%= p("grafana.auth.generic_oauth.name") %>
+allow_sign_up = <%= p("grafana.auth.generic_oauth.allow_sign_up") %>
+client_id = <%= p("grafana.auth.generic_oauth.client_id") %>
+client_secret = <%= p("grafana.auth.generic_oauth.client_secret") %>
+scopes = <%= p("grafana.auth.generic_oauth.scopes").join(" ") %>
+auth_url = <%= p("grafana.auth.generic_oauth.auth_url") %>
+token_url = <%= p("grafana.auth.generic_oauth.token_url") %>
+api_url = <%= p("grafana.auth.generic_oauth.api_url") %>
+allowed_domains = <%= p("grafana.auth.generic_oauth.allowed_domains").join(" ") %>
+<% if_p("grafana.auth.generic_oauth.tls_client_cert", "grafana.auth.generic_oauth.tls_client_key", "grafana.auth.generic_oauth.tls_client_ca") do %>
+tls_client_cert = /var/vcap/jobs/grafana/config/client.crt
+tls_client_key = /var/vcap/jobs/grafana/config/client.key
+tls_client_ca = /var/vcap/jobs/grafana/config/cacert.pem
+<% end %>
+<% end %>
 
 #################################### Grafana.net Auth ####################
 [auth.grafananet]
