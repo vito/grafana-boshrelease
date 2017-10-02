@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e -u -x
+
+version="$(cat version/version)"
+tarball="$PWD/rc/grafana-${version}.tgz"
+
+# work-around Go BOSH CLI trying to rename blobs downloaded into ~/.root/tmp
+# into release dir, which is invalid cross-device link
+export HOME=$PWD
+
+pushd grafana-release
+  bosh create-release --name grafana --version "$version" --tarball "$tarball"
+popd

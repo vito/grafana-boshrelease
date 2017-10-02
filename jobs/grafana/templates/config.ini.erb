@@ -6,6 +6,9 @@
 # possible values : production, development
 ; app_mode = production
 
+# instance name, defaults to HOSTNAME environment variable value or hostname if HOSTNAME var is empty
+; instance_name = ${HOSTNAME}
+
 #################################### Paths ####################################
 [paths]
 # Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
@@ -42,7 +45,8 @@ http_port = <%= p("grafana.listen_port") %>
 ;enforce_domain = false
 
 <% if_p("grafana.root_url") do |root_url| %>
-# The full public facing url
+# The full public facing url you use in browser, used for redirects and emails
+# If you use reverse proxy and sub path specify full url (with sub path)
 root_url = <%= root_url %>
 <% end %>
 
@@ -63,12 +67,20 @@ cert_key = /var/vcap/jobs/grafana/config/ssl.key
 
 #################################### Database ####################################
 [database]
+# You can configure the database connection by specifying type, host, name, user and password
+# as seperate properties or as on string using the url propertie.
+
 # Either "mysql", "postgres" or "sqlite3", it's your choice
 type = sqlite3
 ;host = 127.0.0.1:3306
 ;name = grafana
 ;user = root
+# If the password contains # or ; you have to wrap it with trippel quotes. Ex """#password;"""
 ;password =
+
+# Use either URL or the previous fields to configure the database
+# Example: mysql://user:secret@host:port/database
+;url =
 
 # For "postgres" only, either "disable", "require" or "verify-full"
 ;ssl_mode = disable
@@ -135,8 +147,20 @@ admin_password = <%= p("grafana.admin_password") %>
 # disable gravatar profile images
 ;disable_gravatar = false
 
-# data source proxy whitelist (ip_or_domain:port seperated by spaces)
+# data source proxy whitelist (ip_or_domain:port separated by spaces)
 ;data_source_proxy_whitelist =
+
+[snapshots]
+# snapshot sharing options
+external_enabled = <%= p("grafana.snapshots.external_enabled") %>
+;external_snapshot_url = https://snapshots-origin.raintank.io
+;external_snapshot_name = Publish to snapshot.raintank.io
+
+# remove expired snapshot
+;snapshot_remove_expired = true
+
+# remove snapshots after 90 days
+;snapshot_TTL_days = 90
 
 #################################### Users ####################################
 [users]
@@ -154,6 +178,13 @@ auto_assign_org_role = <%= p("grafana.users.auto_assign_organization_role") %>
 
 # Background text for the user field on the login page
 ;login_hint = email or username
+
+# Default UI theme ("dark" or "light")
+;default_theme = dark
+
+[auth]
+# Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false
+;disable_login_form = false
 
 #################################### Anonymous Auth ##########################
 [auth.anonymous]
@@ -196,6 +227,35 @@ api_url = <%= p("grafana.auth.google.api_url") %>
 allowed_domains = <%= p("grafana.auth.google.allowed_email_domains").join(" ") %>
 <% end %>
 
+<% if_p("grafana.auth.generic_oauth.enabled", "grafana.auth.generic_oauth.client_id", "grafana.auth.generic_oauth.client_secret", "grafana.auth.generic_oauth.auth_url", "grafana.auth.generic_oauth.token_url", "grafana.auth.generic_oauth.api_url") do %>
+#################################### Generic OAuth ##########################
+[auth.generic_oauth]
+enabled = true
+name = <%= p("grafana.auth.generic_oauth.name") %>
+allow_sign_up = <%= p("grafana.auth.generic_oauth.allow_sign_up") %>
+client_id = <%= p("grafana.auth.generic_oauth.client_id") %>
+client_secret = <%= p("grafana.auth.generic_oauth.client_secret") %>
+scopes = <%= p("grafana.auth.generic_oauth.scopes").join(" ") %>
+auth_url = <%= p("grafana.auth.generic_oauth.auth_url") %>
+token_url = <%= p("grafana.auth.generic_oauth.token_url") %>
+api_url = <%= p("grafana.auth.generic_oauth.api_url") %>
+allowed_domains = <%= p("grafana.auth.generic_oauth.allowed_domains").join(" ") %>
+<% if_p("grafana.auth.generic_oauth.tls_client_cert", "grafana.auth.generic_oauth.tls_client_key", "grafana.auth.generic_oauth.tls_client_ca") do %>
+tls_client_cert = /var/vcap/jobs/grafana/config/client.crt
+tls_client_key = /var/vcap/jobs/grafana/config/client.key
+tls_client_ca = /var/vcap/jobs/grafana/config/cacert.pem
+<% end %>
+<% end %>
+
+#################################### Grafana.net Auth ####################
+[auth.grafananet]
+;enabled = false
+;allow_sign_up = true
+;client_id = some_id
+;client_secret = some_secret
+;scopes = user:email
+;allowed_organizations =
+
 <% if_p("grafana.auth.proxy.enabled") do %>
 #################################### Auth Proxy ##########################
 [auth.proxy]
@@ -213,6 +273,7 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 [auth.ldap]
 ;enabled = false
 ;config_file = /etc/grafana/ldap.toml
+;allow_sign_up = true
 
 #################################### SMTP / Emailing ##########################
 [smtp]
@@ -231,22 +292,30 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 #################################### Logging ##########################
 [log]
 # Either "console", "file", "syslog". Default is console and  file
-# Use comma to separate multiple modes, e.g. "console, file"
-;mode = console, file
+# Use space to separate multiple modes, e.g. "console file"
+;mode = console file
 
-# Buffer length of channel, keep it as it is if you don't know what it is.
-;buffer_len = 10000
+# Either "trace", "debug", "info", "warn", "error", "critical", default is "info"
+;level = info
 
-# Either "Trace", "Debug", "Info", "Warn", "Error", "Critical", default is "Info"
-;level = Info
+# optional settings to set different levels for specific loggers. Ex filters = sqlstore:debug
+;filters =
+
 
 # For "console" mode only
 [log.console]
 ;level =
 
+# log line format, valid options are text, console and json
+;format = console
+
 # For "file" mode only
 [log.file]
 ;level =
+
+# log line format, valid options are text, console and json
+;format = text
+
 # This enables automated log rotate(switch of following options), default is true
 ;log_rotate = true
 
@@ -254,7 +323,7 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 ;max_lines = 1000000
 
 # Max size shift of single file, default is 28 means 1 << 28, 256MB
-;max_lines_shift = 28
+;max_size_shift = 28
 
 # Segment log daily, default is true
 ;daily_rotate = true
@@ -262,7 +331,24 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 # Expired days of log file(delete after max days), default is 7
 ;max_days = 7
 
-#################################### AMPQ Event Publisher ##########################
+[log.syslog]
+;level =
+
+# log line format, valid options are text, console and json
+;format = text
+
+# Syslog network type and address. This can be udp, tcp, or unix. If left blank, the default unix endpoints will be used.
+;network =
+;address =
+
+# Syslog facility. user, daemon and local0 through local7 are valid.
+;facility =
+
+# Syslog tag. By default, the process' argv[0] is used.
+;tag =
+
+
+#################################### AMQP Event Publisher ##########################
 [event_publisher]
 ;enabled = false
 ;rabbitmq_url = amqp://localhost/
@@ -272,3 +358,53 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 [dashboards.json]
 enabled = true
 path = /var/vcap/store/grafana/dashboards
+
+#################################### Alerting ######################################
+[alerting]
+# Makes it possible to turn off alert rule execution.
+;execute_alerts = true
+
+#################################### Internal Grafana Metrics ##########################
+# Metrics available at HTTP API Url /api/metrics
+[metrics]
+# Disable / Enable internal metrics
+;enabled           = true
+
+# Publish interval
+;interval_seconds  = 10
+
+# Send internal metrics to Graphite
+[metrics.graphite]
+# Enable by setting the address setting (ex localhost:2003)
+;address =
+;prefix = prod.grafana.%(instance_name)s.
+
+#################################### Internal Grafana Metrics ##########################
+# Url used to to import dashboards directly from Grafana.net
+[grafana_net]
+;url = https://grafana.net
+
+#################################### External image storage ##########################
+[external_image_storage]
+# Used for uploading images to public servers so they can be included in slack/email messages.
+# you can choose between (s3, webdav)
+<% if_p("grafana.external_image_storage.s3.bucket_url") do %>
+provider = s3
+<% end %>
+<% if_p("grafana.external_image_storage.webdav.url") do %>
+provider = webdav
+<% end %>
+
+[external_image_storage.s3]
+<% if_p("grafana.external_image_storage.s3.bucket_url", "grafana.external_image_storage.s3.access_key", "grafana.external_image_storage.s3.secret_key") do |bucket, key, secret| %>
+bucket_url = <%= bucket %>
+access_key = <%= key %>
+secret_key = <%= secret %>
+<% end %>
+
+[external_image_storage.webdav]
+<% if_p("grafana.external_image_storage.webdav.url", "grafana.external_image_storage.webdav.username", "grafana.external_image_storage.webdav.password") do |url, user, pass| %>
+url = <%= url %>
+username = <%= user %>
+password = <%= pass %>
+<% end %>

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e -u -x
+
+final_version="$(cat final-version/version)"
+
+git config --global user.email "ci@localhost"
+git config --global user.name "CI Bot"
+
+git clone ./grafana-release ./finalized-repo
+
+pushd finalized-repo
+  set +x
+  echo "$BOSH_PRIVATE_CONFIG" > config/private.yml
+  set -x
+
+  bosh create-release --final --name grafana --version "$version" --tarball "bosh-rc/grafana-$version.tgz"
+  git add -A
+  git commit -m "release v${final_version}"
+  git tag -f "v${final_version}"
+popd
