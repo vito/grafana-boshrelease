@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: concourse/bosh-cli
+
+inputs:
+- name: release
+- name: blob-dir
+
+outputs:
+- name: bumped-release
+
+params:
+  BOSH_PRIVATE_CONFIG:
+  BLOB_NAME:
+  BLOB_VERSION:
+  BLOB_VERSION_FILE:
+  BLOB_DESTINATION:
+
+run:
+  path: release/ci/tasks/bump-blob

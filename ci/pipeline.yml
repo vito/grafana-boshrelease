@@ -1,10 +1,10 @@
 ---
 groups:
 - name: dev
-  jobs: [build-rc, ship]
+  jobs: [bump-grafana, rc, build-rc, ship]
 
 - name: semver
-  jobs: [major, minor, patch, rc]
+  jobs: [major, minor, patch]
 
 resource_types:
 - name: bintray
@@ -48,10 +48,30 @@ resources:
     username: vito
     api_key: ((bintray_api_key))
     subject: vito
-    repo: grafana-release
-    package: grafana-release-rc
+    repo: grafana-boshrelease-rcs
+    package: grafana-boshrelease-rc
 
 jobs:
+- name: bump-grafana
+  public: true
+  plan:
+  - get: grafana
+  - get: grafana-release
+  - task: bump-blob
+    file: ci/tasks/bump-blob.yml
+    input_mapping:
+      blob-dir: grafana
+      release: grafana-release
+    params:
+      BOSH_PRIVATE_CONFIG: ((bosh_private_config))
+      BLOB_NAME: grafana
+      BLOB_DESTINATION: grafana
+      BLOB_VERSION_FILE: grafana/version
+  - put: grafana-release
+    params:
+      repository: bumped-release
+      rebase: true
+
 - name: rc
   public: true
   serial_groups: [version]
