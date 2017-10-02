@@ -78,7 +78,7 @@ jobs:
     params: {pre: rc}
     passed: [rc]
   - task: create-rc
-    file: ci/tasks/create-rc.yml
+    file: grafana-release/ci/tasks/create-rc.yml
   - put: grafana-release-rc
     params:
       file: rc/*.tgz
@@ -99,7 +99,7 @@ jobs:
     passed: [build-rc]
     params: {bump: final}
   - task: create-final
-    file: ci/tasks/create-final.yml
+    file: grafana-release/ci/tasks/create-final.yml
     params: {BOSH_PRIVATE_CONFIG: ((bosh_private_config))}
   - put: version
     params: {file: final-version/version}
