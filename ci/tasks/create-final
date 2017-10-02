@@ -2,7 +2,7 @@
 
 set -e -u -x
 
-final_version="$(cat version/version)"
+version="$(cat version/version)"
 
 git config --global user.email "ci@localhost"
 git config --global user.name "CI Bot"
@@ -14,8 +14,8 @@ pushd finalized-repo
   echo "$BOSH_PRIVATE_CONFIG" > config/private.yml
   set -x
 
-  bosh create-release --final --name grafana --version "$version" --tarball "bosh-rc/grafana-$version.tgz"
+  bosh create-release --final --name grafana --version "$version"
   git add -A
-  git commit -m "release v${final_version}"
-  git tag -f "v${final_version}"
+  git commit -m "release v${version}"
+  git tag -f "v${version}"
 popd

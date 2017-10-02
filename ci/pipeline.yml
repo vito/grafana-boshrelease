@@ -114,7 +114,7 @@ jobs:
   - put: version
     params: {file: final-version/version}
   - put: grafana-release
-    params: {repository: finalized-repo}
+    params: {repository: finalized-repo, merge: true}
 
 - name: major
   public: true
