@@ -71,8 +71,6 @@ jobs:
   plan:
   - get: grafana-release
     trigger: true
-  - get: grafana
-    trigger: true
   - get: version
     params: {pre: rc}
   - put: version
@@ -84,8 +82,6 @@ jobs:
   - get: grafana-release
     trigger: true
     passed: [rc]
-  - get: grafana
-    trigger: true
     passed: [rc]
   - get: version
     params: {pre: rc}
@@ -106,8 +102,6 @@ jobs:
   serial_groups: [version]
   plan:
   - get: grafana-release
-    passed: [build-rc]
-  - get: grafana
     passed: [build-rc]
   - get: final-version
     resource: version
