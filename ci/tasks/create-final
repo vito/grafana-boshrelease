@@ -14,7 +14,6 @@ pushd finalized-repo
   echo "$BOSH_PRIVATE_CONFIG" > config/private.yml
   set -x
 
-  release_yml=$PWD/releases/concourse/concourse-${VERSION}.yml
   bosh create-release --final --name grafana --version "$version" --tarball "bosh-rc/grafana-$version.tgz"
   git add -A
   git commit -m "release v${final_version}"
