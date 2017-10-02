@@ -85,6 +85,8 @@ jobs:
       version_regexp: rc/grafana-(.*).tgz
       vcs_url: https://github.com/vito/grafana-boshrelease
       licenses: ["Apache-2.0"]
+      publish: true
+      list_in_downloads: true
 
 - name: ship
   public: true
