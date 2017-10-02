@@ -3,7 +3,7 @@
 set -e -u -x
 
 version="$(cat version/version)"
-tarball="$PWD/bosh-rc/grafana-${version}.tgz"
+tarball="$PWD/rc/grafana-${version}.tgz"
 
 # work-around Go BOSH CLI trying to rename blobs downloaded into ~/.root/tmp
 # into release dir, which is invalid cross-device link
