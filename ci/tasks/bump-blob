@@ -18,11 +18,11 @@ if [ -z "$BLOB_VERSION" ] && [ -z "$BLOB_VERSION_FILE" ] ; then
   exit 1
 fi
 
-blob_dir=$PWD/blob-dir
-
 if [ -n "$BLOB_VERSION_FILE" ]; then
-  BLOB_VERSION=`cat ${blob_dir}/${BLOB_VERSION_FILE}`
+  BLOB_VERSION=`cat ${BLOB_VERSION_FILE}`
 fi
+
+blob_dir=$PWD/blob-dir
 
 git clone release bumped-release
 

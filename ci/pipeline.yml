@@ -58,7 +58,7 @@ jobs:
   - get: grafana
   - get: grafana-release
   - task: bump-blob
-    file: ci/tasks/bump-blob.yml
+    file: grafana-release/ci/tasks/bump-blob.yml
     input_mapping:
       blob-dir: grafana
       release: grafana-release
