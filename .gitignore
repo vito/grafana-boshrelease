@@ -16,6 +16,9 @@ blobs
 *#
 #*
 
+# workaround for HOME=$PWD hack for bosh CLI
+.gitconfig
+
 /*deployment.yml
 /src_alt
 
