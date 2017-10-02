@@ -66,7 +66,6 @@ jobs:
       BOSH_PRIVATE_CONFIG: ((bosh_private_config))
       BLOB_NAME: grafana
       BLOB_DESTINATION: grafana
-      BLOB_VERSION_FILE: grafana/version
   - put: grafana-release
     params:
       repository: bumped-release

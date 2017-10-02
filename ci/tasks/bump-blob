@@ -13,16 +13,8 @@ if [ -z "$BLOB_DESTINATION" ]; then
   exit 1
 fi
 
-if [ -z "$BLOB_VERSION" ] && [ -z "$BLOB_VERSION_FILE" ] ; then
-  echo "must specify \$BLOB_VERSION or \$BLOB_VERSION_FILE" >&2
-  exit 1
-fi
-
-if [ -n "$BLOB_VERSION_FILE" ]; then
-  BLOB_VERSION=`cat ${BLOB_VERSION_FILE}`
-fi
-
 blob_dir=$PWD/blob-dir
+blob_version=`cat $blob_dir/version`
 
 git clone release bumped-release
 
@@ -41,8 +33,8 @@ git config --global user.name "CI Bot"
 
 bosh blobs --column="path" | grep ${BLOB_DESTINATION}/${BLOB_NAME} | xargs bosh remove-blob
 
-bosh -n add-blob $blob_dir/*.tar.gz ${BLOB_DESTINATION}/${BLOB_NAME}-${BLOB_VERSION}.tar.gz
+bosh -n add-blob $blob_dir/*.tar.gz ${BLOB_DESTINATION}/${BLOB_NAME}-${blob_version}.tar.gz
 bosh -n upload-blobs
 
 git add -A
-git commit -m "update ${BLOB_NAME} blob to ${BLOB_VERSION}"
+git commit -m "update ${BLOB_NAME} blob to ${blob_version}"
