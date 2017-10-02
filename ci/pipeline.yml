@@ -116,6 +116,7 @@ jobs:
   - task: create-final
     file: grafana-release/ci/tasks/create-final.yml
     params: {BOSH_PRIVATE_CONFIG: ((bosh_private_config))}
+    input_mapping: {version: final-version}
   - put: version
     params: {file: final-version/version}
   - put: grafana-release

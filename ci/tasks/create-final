@@ -2,7 +2,7 @@
 
 set -e -u -x
 
-final_version="$(cat final-version/version)"
+final_version="$(cat version/version)"
 
 git config --global user.email "ci@localhost"
 git config --global user.name "CI Bot"
