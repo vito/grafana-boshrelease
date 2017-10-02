@@ -82,7 +82,7 @@ jobs:
   - put: grafana-release-rc
     params:
       file: rc/*.tgz
-      version_regexp: rc/grafana-(.*).yml
+      version_regexp: rc/grafana-(.*).tgz
       vcs_url: https://github.com/vito/grafana-boshrelease
       licenses: ["Apache-2.0"]
 
