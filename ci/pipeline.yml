@@ -15,12 +15,6 @@ resources:
 - name: grafana-release
   type: git
   source:
-    uri: https://github.com/vito/grafana-boshrelease.git
-    branch: master
-
-- name: grafana-release-final
-  type: git
-  source:
     uri: git@github.com:vito/grafana-boshrelease.git
     branch: master
     private_key: ((github_deploy_key))
@@ -124,7 +118,7 @@ jobs:
     params: {BOSH_PRIVATE_CONFIG: ((bosh_private_config))}
   - put: version
     params: {file: final-version/version}
-  - put: grafana-release-final
+  - put: grafana-release
     params: {repository: finalized-repo}
 
 - name: major
