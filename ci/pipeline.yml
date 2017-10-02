@@ -1,0 +1,135 @@
+---
+groups:
+- name: dev
+  jobs: [build-rc, ship]
+
+- name: semver
+  jobs: [major, minor, patch, rc]
+
+resource_types:
+- name: bintray
+  type: docker-image
+  source: {repository: camelpunch/bintray-resource}
+
+resources:
+- name: grafana-release
+  type: git
+  source:
+    uri: https://github.com/vito/grafana-boshrelease.git
+    branch: master
+
+- name: grafana-release-final
+  type: git
+  source:
+    uri: git@github.com:vito/grafana-boshrelease.git
+    branch: master
+    private_key: ((github_deploy_key))
+
+- name: version
+  type: semver
+  source:
+    driver: git
+    initial_version: 13.0.0
+    uri: git@github.com:vito/grafana-boshrelease
+    branch: version
+    file: version
+    private_key: ((github_deploy_key))
+
+- name: grafana
+  type: s3
+  source:
+    bucket: grafana-releases
+    path: release/grafana-(.*).linux-x64.tar.gz
+
+- name: grafana-release-rc
+  type: bintray
+  source:
+    username: vito
+    api_key: ((bintray_api_key))
+    subject: vito
+    repo: grafana-release
+    package: grafana-release-rc
+
+jobs:
+- name: rc
+  public: true
+  serial_groups: [version]
+  plan:
+  - get: grafana-release
+    trigger: true
+  - get: grafana
+    trigger: true
+  - get: version
+    params: {pre: rc}
+  - put: version
+    params: {file: version/version}
+
+- name: build-rc
+  public: true
+  plan:
+  - get: grafana-release
+    trigger: true
+    passed: [rc]
+  - get: grafana
+    trigger: true
+    passed: [rc]
+  - get: version
+    params: {pre: rc}
+    passed: [rc]
+  - task: create-rc
+    file: ci/tasks/create-rc.yml
+  - put: grafana-release-rc
+    params:
+      file: rc/*.tgz
+      version_regexp: rc/grafana-(.*).yml
+      vcs_url: https://github.com/vito/grafana-boshrelease
+      licenses: ["Apache-2.0"]
+
+- name: ship
+  public: true
+  serial_groups: [version]
+  plan:
+  - get: grafana-release
+    passed: [build-rc]
+  - get: grafana
+    passed: [build-rc]
+  - get: final-version
+    resource: version
+    passed: [build-rc]
+    params: {bump: final}
+  - task: create-final
+    file: ci/tasks/create-final.yml
+    params: {BOSH_PRIVATE_CONFIG: ((bosh_private_config))}
+  - put: version
+    params: {file: final-version/version}
+  - put: grafana-release-final
+    params: {repository: finalized-repo}
+
+- name: major
+  public: true
+  serial_groups: [version]
+  plan:
+  - get: version
+    params: {bump: major, pre: rc}
+  - put: version
+    params: {file: version/version}
+
+- name: minor
+  public: true
+  serial_groups: [version]
+  plan:
+  - get: version
+    params: {bump: minor, pre: rc}
+  - put: version
+    params: {file: version/version}
+
+- name: patch
+  public: true
+  serial_groups: [version]
+  plan:
+  - get: version
+    passed: [ship]
+    params: {bump: patch, pre: rc}
+    trigger: true
+  - put: version
+    params: {file: version/version}

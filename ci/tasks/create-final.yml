@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: concourse/bosh-cli
+
+inputs:
+- name: grafana-release
+- name: version
+
+outputs:
+- name: finalized-repo
+
+run: {path: grafana-release/ci/tasks/create-final}
