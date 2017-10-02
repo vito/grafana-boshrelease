@@ -7,6 +7,7 @@ LOG_DIR=/var/vcap/sys/log/grafana
 STORE_DIR=/var/vcap/store/grafana
 PACKAGE_DIR=/var/vcap/packages/grafana
 PIDFILE=$RUN_DIR/pid
+HOME_DIR=/var/vcap/jobs/grafana/home
 
 source $PACKAGE_DIR/pid_utils.sh
 
@@ -26,7 +27,7 @@ case $1 in
 
     setcap cap_net_bind_service=+ep $PACKAGE_DIR/bin/grafana-server
 
-    exec chpst -u vcap:vcap $PACKAGE_DIR/bin/grafana-server \
+    exec chpst -u vcap:vcap env HOME=$HOME_DIR $PACKAGE_DIR/bin/grafana-server \
       -config=/var/vcap/jobs/grafana/config/config.ini \
       -homepath=$PACKAGE_DIR \
       -pidfile=$PIDFILE \

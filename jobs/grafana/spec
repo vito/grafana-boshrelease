@@ -9,6 +9,7 @@ templates:
   config.ini.erb: config/config.ini
   ssl.key.erb: config/ssl.key
   ssl.crt.erb: config/ssl.crt
+  credentials: home/.aws/credentials
   client.key.erb: config/client.key
   client.crt.erb: config/client.crt
   cacert.pem.erb: config/cacert.pem
@@ -220,6 +221,18 @@ properties:
 
   grafana.auth.proxy.auto_sign_up:
     description: "Enable sign up of users who do not exist in Grafana DB"
+
+  grafana.aws.aws_access_key_id:
+    description: "access key for AWS cloudwatch data source"
+    default: ""
+
+  grafana.aws.aws_secret_access_key:
+    description: "secret access key for AWS cloudwatch data source"
+    default: ""
+
+  grafana.aws.region:
+    description: "region for AWS cloudwatch data source"
+    default: ""
 
   grafana.snapshots.external_enabled:
     description: "Enable external snapshots sharing (to snapshot.raintank.io)"
