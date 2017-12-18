@@ -238,11 +238,26 @@ properties:
     description: "Enable external snapshots sharing (to snapshot.raintank.io)"
     default: true
 
-  grafana.external_image_storage.s3.bucket_url:
-    description: "S3 Bucket URL to which images can be uploaded for public visibility (i.e. alerting)."
+  grafana.external_image_storage.s3.bucket:
+    description: "S3 Bucket to which images can be uploaded for public visibility (i.e. alerting)."
+
+  grafana.external_image_storage.s3.region:
+    description: "S3 Bucket region."
+
+  grafana.external_image_storage.s3.path:
+    description: "S3 Bucket path."
 
   grafana.external_image_storage.s3.access_key:
     description: "Access key to use when uploading to the bucket."
 
   grafana.external_image_storage.s3.secret_key:
     description: "Secret key to use when uploading to the bucket."
+
+  grafana.external_image_storage.webdav.url:
+    description: "WebDAV URL to which images can be uploaded for public visibility (i.e. alerting)."
+
+  grafana.external_image_storage.webdav.username:
+    description: "WebDAV user name."
+
+  grafana.external_image_storage.webdav.password:
+    description: "WebDAV password."
