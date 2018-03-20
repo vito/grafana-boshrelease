@@ -3,6 +3,8 @@ builds:
     version: "7"
   0e1cfa4e-c6f7-4909-530c-e4cb6e573258:
     version: "11"
+  2c179648-5648-49f0-5deb-5a7986d0dd0b:
+    version: 13.2.0
   87b9bd24-569b-4110-6577-59b0b2955099:
     version: "12"
   9f062546-2388-4cb8-7dd8-270a902a0899:
