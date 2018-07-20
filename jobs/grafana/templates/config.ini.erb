@@ -297,10 +297,12 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 ;enabled = true
 
 #################################### Auth LDAP ##########################
+<% if_p("grafana.auth.ldap.enabled") do %>
 [auth.ldap]
-;enabled = false
-;config_file = /etc/grafana/ldap.toml
-;allow_sign_up = true
+enabled = true
+config_file = /var/vcap/jobs/grafana/ldap.toml
+allow_sign_up = <%= p("grafana.auth.ldap.allow_sign_up") %>
+<% end %>
 
 #################################### SMTP / Emailing ##########################
 [smtp]
@@ -465,4 +467,3 @@ password = <%= pass %>
 [external_image_storage.gcs]
 ;key_file =
 ;bucket =
-

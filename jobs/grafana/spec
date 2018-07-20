@@ -74,6 +74,15 @@ properties:
     description: "The role to assume for anonymous users."
     default: Viewer
 
+  grafana.auth.ldap.enabled:
+    description: "Auth LDAP enable"
+
+  grafana.auth.ldap.config:
+    description: "LDAP configuration (toml)"
+    
+  grafana.auth.ldap.allow_sign_up:
+    description: "Auth LDAP allow sign up"
+
   grafana.auth.github.enabled:
     description: "Permit users to authenticate via GitHub OAuth."
     default: false
