@@ -33,7 +33,7 @@ resources:
   type: s3
   source:
     bucket: grafana-releases
-    regexp: release/grafana-([\d\.]+).linux-x64.tar.gz
+    regexp: release/grafana-([\d\.]+).linux-amd64.tar.gz
     region_name: us-west-2
 
 - name: grafana-release-rc
