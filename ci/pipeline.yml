@@ -8,7 +8,7 @@ groups:
 
 resource_types:
 - name: bintray
-  type: docker-image
+  type: registry-image
   source: {repository: camelpunch/bintray-resource}
 
 resources:
