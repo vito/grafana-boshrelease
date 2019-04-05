@@ -29,4 +29,6 @@ builds:
     version: "13"
   db0fa1f9-0638-4481-81f1-bcb5530d7749:
     version: "1"
+  e2d6cb82-7021-42f5-51ae-271d88bf4279:
+    version: 13.2.1
 format-version: "2"
