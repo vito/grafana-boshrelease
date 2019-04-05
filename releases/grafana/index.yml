@@ -9,6 +9,8 @@ builds:
     version: "12"
   9f062546-2388-4cb8-7dd8-270a902a0899:
     version: "10"
+  a24cec91-a524-490b-4d79-51215c894dc3:
+    version: 13.2.2
   a66b9999-1cdc-4de6-7886-dc5901014bf5:
     version: "5"
   b61ddd2b-2ffa-4101-6d47-888eeeb13c2f:
