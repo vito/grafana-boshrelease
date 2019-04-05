@@ -1,4 +1,4 @@
-grafana/grafana-5.2.4.tar.gz:
-  size: 54300847
-  object_id: 1efb54d9-1ab0-49ef-40ee-2ca5f6b69e88
-  sha: b44153bc0e3f0fd62bb25dba5c96c7066bc0d485
+grafana/grafana-6.1.0.tar.gz:
+  size: 56560533
+  object_id: b8732ec7-9e76-49b9-607e-294daa4ae062
+  sha: 6f33c0eda1fa85beeb6b6461285fda7dc27a75d3
