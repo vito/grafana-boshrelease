@@ -1,4 +1,4 @@
-grafana/grafana-6.1.0.tar.gz:
-  size: 56560533
-  object_id: b8732ec7-9e76-49b9-607e-294daa4ae062
-  sha: 6f33c0eda1fa85beeb6b6461285fda7dc27a75d3
+grafana/grafana-6.1.1.tar.gz:
+  size: 56562242
+  object_id: b76a5e3d-2f38-4f22-5156-7217eec86b80
+  sha: 25285602a9739a523f99146c9f5bbaa7a4987c6a
