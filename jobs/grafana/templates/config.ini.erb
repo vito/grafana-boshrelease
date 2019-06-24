@@ -26,6 +26,11 @@ logs = /var/vcap/sys/log/grafana
 plugins = /var/vcap/store/grafana/plugins
 
 #
+# Directory containing provisioning config files that grafana will apply on startup
+#
+provisioning = /var/vcap/jobs/grafana/config/provisioning
+
+#
 #################################### Server ####################################
 [server]
 # Protocol (http, https, socket)
@@ -384,11 +389,6 @@ auto_sign_up = <%= p("grafana.auth.proxy.auto_sign_up") %>
 ;enabled = false
 ;rabbitmq_url = amqp://localhost/
 ;exchange = grafana_events
-
-;#################################### Dashboard JSON files ##########################
-[dashboards.json]
-enabled = true
-path = /var/vcap/store/grafana/dashboards
 
 #################################### Alerting ############################
 [alerting]

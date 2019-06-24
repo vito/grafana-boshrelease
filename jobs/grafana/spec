@@ -13,6 +13,7 @@ templates:
   client.key.erb: config/client.key
   client.crt.erb: config/client.crt
   cacert.pem.erb: config/cacert.pem
+  dashboards.yml: config/provisioning/dashboards/dashboards.yml
 
 packages:
 - grafana
