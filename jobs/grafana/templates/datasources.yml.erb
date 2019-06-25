@@ -1,0 +1,18 @@
+<%
+  require 'yaml'
+  datasources = p('grafana.datasources')
+  if_p('grafana.datasource') do |datasource|
+    datasources << p('grafana.datasource')
+  end
+  datasources = datasources.map do |datasource|
+    {
+      'access' => 'proxy',
+      'basicAuth' => false,
+      'database' => datasource.delete('database_name'),
+      'type' => datasource.delete('database_type'),
+    }.merge(datasource)
+  end
+  datasources = {"apiVersion" => 1, "datasources" => datasources}
+%>
+
+<%= YAML.dump(datasources) %>
