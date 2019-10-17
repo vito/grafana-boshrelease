@@ -2,3 +2,11 @@
 
 echo "[$(date)] Calling 'create-update-dashboards' ..."
 $(dirname $0)/create-update-dashboards
+
+echo "[$(date)] Updating password for admin user"
+(
+cd $(dirname $0)/..
+mkdir conf
+ln -s $(pwd)/config/config.ini $(pwd)/conf/defaults.ini
+/var/vcap/packages/grafana/bin/grafana-cli admin reset-admin-password <%= p("grafana.admin_password") %>
+)
